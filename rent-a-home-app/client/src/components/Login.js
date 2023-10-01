@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Container, Typography } from '@mui/material';
 
-const Login = () => {
+const Login = ({ setUser }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
     const config = {
         headers: {
@@ -20,7 +22,9 @@ const Login = () => {
                 password
             };
             await axios.post('http://localhost:3001/api/users/login', body, config);
+            setUser({ username: username });
             setMessage('Login successful!');
+            navigate('/pegasus');
         } catch (error) {
             setMessage('Login failed.');
         }

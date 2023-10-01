@@ -2,7 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { ObjectId } = require('mongodb');
-const db = require('./db');
+const db = require('../db');
 
 const router = express.Router();
 
@@ -37,6 +37,43 @@ router.post('/signup', async (req, res) => {
         res.status(500).send(err.message);
     }
 });
+
+
+// Login Route
+router.post('/login', async (req, res) => {
+    const usersCollection = db.getDB().collection("User");
+    const { username, password } = req.body;
+
+    try {
+        const user = await usersCollection.findOne({ username });
+
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        // Compare provided password with stored hashed password
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+        
+        if (!isPasswordValid) {
+            return res.status(401).send('Invalid credentials');
+        }
+
+        // Generate JWT token if authenticated
+        const token = jwt.sign({ userId: user._id.toString() }, process.env.SECRET_KEY, {
+            expiresIn: '1h' // The token will expire in 1 hour. Adjust as needed.
+        });
+
+        return res.json({
+            message: 'Login successful',
+            token,
+            userId: user._id.toString()
+        });
+
+    } catch (error) {
+        return res.status(500).send('Server error');
+    }
+});
+
 
 // Update User Route
 router.put('/:userId', async (req, res) => {
