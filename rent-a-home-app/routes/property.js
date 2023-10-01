@@ -1,8 +1,8 @@
 // routes/property.js
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const db = require('./db');
-const Property = require('./models/Property');
+const db = require('../db');
+const Property = require('../models/Property');
 
 const router = express.Router();
 
@@ -26,8 +26,8 @@ router.get('/', async (req, res) => {
     const propertiesCollection = db.getDB().collection("Property");
 
     try {
-        const properties = await propertiesCollection.find().toArray();
-        res.status(200).json(properties);
+        const properties = await propertiesCollection.find({}).toArray();
+        res.json(properties);
     } catch (err) {
         res.status(500).send(err.message);
     }

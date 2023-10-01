@@ -26,7 +26,7 @@ function Navigation({ user, setUser }) {
                 <Typography variant="h6" sx={{ flexGrow: 1 }}>
                     Rent-A-Home
                 </Typography>
-                
+
                 {user ? (
                     <>
                         <Typography variant="body1" sx={{ marginRight: 2 }}>
@@ -62,6 +62,9 @@ function Navigation({ user, setUser }) {
                         <Button color="inherit" component={Link} to="/login">Login</Button>
                         <Button color="inherit" component={Link} to="/signup">Signup</Button>
                     </>
+                )}
+                {user && (
+                    <Button color="inherit" component={Link} to="/properties">View Properties</Button>
                 )}
             </Toolbar>
         </AppBar>

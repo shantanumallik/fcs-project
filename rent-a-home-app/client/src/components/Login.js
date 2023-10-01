@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { TextField, Button, Container, Typography } from '@mui/material';
@@ -15,20 +15,39 @@ const Login = ({ setUser }) => {
         }
     };
 
+
+    const [redirectTo, setRedirectTo] = useState(null); // New state for navigation
+
+    useEffect(() => {
+        if (redirectTo) {
+            navigate(redirectTo);
+        }
+    }, [redirectTo, navigate]);
+
     const handleLogin = async () => {
         try {
             const body = { 
                 username, 
                 password
             };
-            await axios.post('http://localhost:3001/api/users/login', body, config);
-            setUser({ username: username });
+            
+            const response = await axios.post('http://localhost:3001/api/users/login', body, config);
+            const userData = response.data;
+
+            setUser(userData); // Set the complete user data
             setMessage('Login successful!');
-            navigate('/pegasus');
+
+            if (userData.user.userType === 'seller_renter') {
+                setRedirectTo('/list-property');
+            } else {
+                setRedirectTo('/pegasus'); // Or some other default route
+            }
+
         } catch (error) {
             setMessage('Login failed.');
         }
     };
+    
 
     return (
         <Container sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100vh', p: 2 }}>
