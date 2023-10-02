@@ -1,8 +1,8 @@
 // routes/property.js
 const express = require('express');
 const { ObjectId } = require('mongodb');
-const db = require('./db');
-const Property = require('./models/Property');
+const db = require('../db');
+const Property = require('../models/Property');
 
 const router = express.Router();
 
