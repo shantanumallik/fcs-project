@@ -1,0 +1,31 @@
+.seller-dashboard-container {
+    height: 100vh;
+    /* background-image: url('home_rental_bg.jpg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.seller-dashboard-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 15px;
+}
+
+.property-paper {
+    padding: 1rem;
+    border-radius: 15px;
+}
+
+.modify-button {
+    margin-top: 0.5rem;
+    margin-right: 0.5rem;
+}
+
+.delete-button {
+    margin-top: 0.5rem;
+}
+
+.description-text {
+    margin-top: 0.5rem;
+}

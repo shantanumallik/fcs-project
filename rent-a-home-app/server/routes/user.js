@@ -62,11 +62,13 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign({ userId: user._id.toString() }, process.env.SECRET_KEY, {
             expiresIn: '1h' // The token will expire in 1 hour. Adjust as needed.
         });
+        console.log("userId:" + user._id.toString())
 
         return res.json({
             message: 'Login successful',
             token,
-            userId: user._id.toString()
+            userId: user._id.toString(),
+            user
         });
 
     } catch (error) {
