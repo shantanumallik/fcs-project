@@ -1,0 +1,25 @@
+/* PropertyDetails.css */
+
+.property-details-background {
+    height: 100vh;
+    /* background-image: url('../../../public/backgrounds/home_rental_bg.jpg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.property-details-content {
+    padding: 2rem;
+    margin-top: 2rem;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 800px;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.property-image {
+    width: 100%;
+    border-radius: 10px;
+    margin-top: 1rem;
+}

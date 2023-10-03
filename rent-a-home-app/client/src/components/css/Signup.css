@@ -1,41 +1,33 @@
-.signup-container {
+/* Signup.css */
+
+.signup-background {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
-    font-family: Arial, sans-serif;
-    background-color: #f4f6f8;
+    padding: 1rem;
+    /* background-image: url('../../../public/backgrounds/home_rental_bg.jpg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
-.signup-box {
-    width: 300px;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    background-color: #ffffff;
+.signup-paper {
+    padding: 2rem;
+    width: 350px;
 }
 
-input, select, button {
+.signup-field {
+    margin: 1rem 0;
     width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #d4d4d4;
-    border-radius: 4px;
-    font-size: 16px;
-    transition: border 0.3s;
 }
 
-input:focus, select:focus {
-    border: 1px solid #007BFF;
+.signup-button {
+    margin-top: 1rem;
+    width: 100%;
 }
 
-button {
-    background-color: #007BFF;
-    color: #ffffff;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
+.signup-message {
+    margin-top: 1rem;
 }

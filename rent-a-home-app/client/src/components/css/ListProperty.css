@@ -1,0 +1,24 @@
+.list-property-container {
+    height: 100vh;
+    /* background-image: url('home_rental_bg.jpg'); */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.property-box {
+    padding: 2rem;
+    max-width: 600px;
+    margin-top: 2.5rem;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 15px;
+}
+
+.upload-input {
+    display: none;
+}
+
+.upload-label {
+    margin-top: 10px;
+}
