@@ -14,7 +14,7 @@ const Properties = () => {
     useEffect(() => {
         const fetchProperties = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/properties');
+                const response = await axios.get(  'https://192.168.2.244/api/properties');
                 setProperties(response.data);
             } catch (err) {
                 setError('Failed to fetch properties. ' + err.message);

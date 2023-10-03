@@ -25,20 +25,28 @@ const Login = ({ setUser }) => {
     const handleLogin = async () => {
         try {
             const body = { username, password };
-            const response = await axios.post('http://localhost:3001/api/users/login', body, config);
+            const response = await axios.post('https://192.168.2.244/api/users/login', body, config);
             const userData = response.data;
             setUser(userData);
             setMessage('Login successful!');
-            if (userData.user.userType === 'seller_renter') {
-                setRedirectTo('/list-property');
-            } else {
-                setRedirectTo('/pegasus'); 
+            
+            // Check user type and set redirection path accordingly
+            switch(userData.user.userType) {
+                case 'seller_renter':
+                    setRedirectTo('/list-property');
+                    break;
+                case 'admin':
+                    setRedirectTo('/admin-dashboard'); // Assuming the route to your AdminDashboard is '/admin-dashboard'
+                    break;
+                default:
+                    setRedirectTo('/properties');
+                    break;
             }
         } catch (error) {
             setMessage('Login failed.');
         }
     };
-    
+        
     return (
         <Container className="login-container">
             <Typography variant="h4" gutterBottom>

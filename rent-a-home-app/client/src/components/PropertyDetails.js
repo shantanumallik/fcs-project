@@ -12,7 +12,7 @@ const PropertyDetails = () => {
     useEffect(() => {
         const fetchProperty = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/properties/${propertyId}`);
+                const response = await axios.get(`https://192.168.2.244/api/properties/${propertyId}`);
                 setProperty(response.data);
             } catch (err) {
                 setError('Failed to fetch property. ' + err.message);

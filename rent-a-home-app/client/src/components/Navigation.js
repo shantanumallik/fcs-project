@@ -63,7 +63,7 @@ function Navigation({ user, setUser }) {
                         >
                             <MenuItem onClick={handleMenuClose}>
                                 <Typography variant="body1">
-                                    Welcome, {user.username}
+                                    Welcome, {user.user.username}
                                 </Typography>
                             </MenuItem>
                             <MenuItem component={Link} to="/properties">View Properties</MenuItem>

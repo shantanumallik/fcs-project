@@ -31,7 +31,7 @@ const Signup = () => {
                 phone,
                 address
             };
-            await axios.post('http://localhost:3001/api/users/signup', body, config);
+            await axios.post(  'https://192.168.2.244/api/users/signup', body, config);
             setMessage('Signup successful!');
         } catch (error) {
             setMessage('Signup failed.');

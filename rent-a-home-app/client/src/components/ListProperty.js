@@ -19,7 +19,7 @@ const ListProperty = ({ user }) => {
         if (image) formData.append('image', image, image.name);
 
         try {
-            await axios.post('http://localhost:3001/api/properties/list', formData, {
+            await axios.post(  'https://192.168.2.244/api/properties/list', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 },

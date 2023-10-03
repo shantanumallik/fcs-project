@@ -19,7 +19,7 @@ app.use(cors(corsOptions));
 db.connect().then(() => {
     app.use('/api', routes); // Prefix all routes with /api
 
-    const port = process.env.PORT || 3001;
+    const port = 3001;
     app.listen(port, () => {
         console.log(`Server is running on port ${port}`);
     });
