@@ -1,21 +1,57 @@
+body {
+    /*background-image: url('../../../public/backgrounds/concrete_wall.jpg'); /* Light textured concrete wall */
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    font-family: 'Arial', sans-serif;
+}
+
 .login-container {
-    display: flex;
+    display: flex !important;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     padding: 1rem;
+    gap: 1rem;
+    background-color: rgba(255, 255, 255, 0.9); /* Near white with transparency */
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft shadow */
 }
 
 .login-field {
-    margin: 1rem 0;
+    margin: 0.5rem 0;
     width: 300px;
+    border: none;
+    border-bottom: 2px solid #c5c5c5; /* Light gray */
+    background-color: transparent;
+    color: #333;
+    outline: none;
+    transition: border-bottom-color 0.3s ease;
+}
+
+.login-field:focus {
+    border-bottom-color: #a5a5a5; /* Slightly darker gray for focus */
 }
 
 .login-button {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    width: 300px;
+    background-color: #ebebeb; /* Very light gray */
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.login-button:hover {
+    background-color: #d5d5d5; /* Slightly darker on hover */
 }
 
 .login-message {
-    margin-top: 1rem;
+    margin-top: 0.5rem;
+    width: 300px;
+    text-align: center;
+    color: #555;
 }

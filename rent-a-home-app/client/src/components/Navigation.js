@@ -8,6 +8,8 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
 
+import './css/Navigation.css';
+
 function Navigation({ user, setUser }) {
     const [open, setOpen] = useState(false); // State to handle Dialog's open/close
     const [anchorEl, setAnchorEl] = useState(null); // For user dropdown menu

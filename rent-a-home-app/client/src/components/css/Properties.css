@@ -1,5 +1,6 @@
-/* Properties.css */
+/* Urban Funk Properties Page */
 
+/* Grunge concrete background */
 .properties-background {
     position: relative;
     height: 100vh;
@@ -7,6 +8,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: #e0e0e0; /* Soft grey, concrete-like */
 }
 
 .properties-background::before {
@@ -16,7 +18,7 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url('../../../public/backgrounds/property_bg.jpg');
+    /*background-image: url('../../../public/backgrounds/concrete_texture.jpg'); /* A concrete or urban texture */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -24,24 +26,60 @@
     z-index: -1;
 }
 
+/* Colorful content container */
 .properties-content-container {
     width: 80%;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.9); /* Bright white to contrast with the urban theme */
     padding: 3rem;
-    border-radius: 2rem;
+    border-radius: 1rem;
+    box-shadow: 0 5px 15px rgba(34,34,34,0.2); /* Soft shadow to lift the card */
 }
 
+.properties-filter-container {
+    margin-bottom: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+/* Funky cards */
 .properties-card {
     text-decoration: none;
     border-radius: 15px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-    transition: transform 0.3s;
+    box-shadow: 0 4px 12px rgba(34,34,34,0.15); /* Soft shadow */
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: rgba(235, 235, 255, 0.9); /* Slight purple tint for funkiness */
+    border: 1px solid rgba(34,34,34,0.1); /* Soft border */
+    overflow: hidden;
 }
 
 .properties-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
+    box-shadow: 0 6px 18px rgba(34,34,34,0.2);
 }
 
 .properties-image {
     border-radius: 15px 15px 0 0;
+}
+
+/* Pagination styles with a funky twist */
+.properties-pagination {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.properties-pagination .MuiPaginationItem-root {
+    color: #fff;
+    background-color: rgba(50,50,90,0.7); /* Dark purple for contrast and funkiness */
+    transition: background-color 0.3s;
+    border-radius: 0.25rem;
+}
+
+.properties-pagination .MuiPaginationItem-root.Mui-selected {
+    background-color: #ff4081; /* Vibrant pink for selected page */
+}
+
+.properties-pagination .MuiPaginationItem-root:hover {
+    background-color: rgba(50,50,90,0.9); /* Slightly darker on hover */
 }

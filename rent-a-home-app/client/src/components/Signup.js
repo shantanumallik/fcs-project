@@ -39,7 +39,7 @@ const Signup = () => {
     };
 
     return (
-        <Container className="signup-background">
+        <Container className="signup-background" display="flex">
             <Paper elevation={5} className="signup-paper">
                 <Typography variant="h4" gutterBottom>
                     Signup
