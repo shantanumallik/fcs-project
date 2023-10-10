@@ -50,6 +50,7 @@ router.get('/seller/:sellerId', async (req, res) => {
 
 // Get all properties
 router.get('/', async (req, res) => {
+    console.log('here')
     const propertiesCollection = db.getDB().collection("Property");
 
     try {

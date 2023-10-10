@@ -31,7 +31,7 @@ const Signup = () => {
                 phone,
                 address
             };
-            await axios.post('http://localhost:3001/api/users/signup', body, config);
+            await axios.post(  'https://192.168.2.244/api/users/signup', body, config);
             setMessage('Signup successful!');
         } catch (error) {
             setMessage('Signup failed.');
@@ -39,7 +39,7 @@ const Signup = () => {
     };
 
     return (
-        <Container className="signup-background">
+        <Container className="signup-background" display="flex">
             <Paper elevation={5} className="signup-paper">
                 <Typography variant="h4" gutterBottom>
                     Signup

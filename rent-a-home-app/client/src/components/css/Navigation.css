@@ -1,0 +1,58 @@
+/* Navigation.css */
+
+/* Neutral Gray AppBar */
+.MuiAppBar-root {
+    /*background-color: #3064b8 !important; /* Neutral Gray */
+    backdrop-filter: blur(5px); /* This will give a blurred effect for the content below the AppBar */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    color: #ffffff !important; /* White text for contrast */
+}
+
+/* Link colors inside AppBar, if any */
+.MuiAppBar-root a {
+    color: #ffffff; /* White color for links */
+    text-decoration: none; /* Removes underline from links */
+    transition: color 0.3s ease; /* Smooth hover transition */
+}
+
+.MuiAppBar-root a:hover {
+    color: #B0B0B0; /* Light gray color on hover */
+}
+
+/* Icons inside the AppBar */
+.MuiAppBar-root .MuiSvgIcon-root {
+    fill: #ffffff !important; /* White icon fill */
+}
+
+/* For the buttons on the AppBar */
+.MuiButton-root {
+    color: #ffffff !important;
+    border: 1px solid #ffffff !important; /* White border for outlined buttons */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover transition */
+    margin-left: 12px; /* Spacing between buttons and other AppBar items */
+    margin-right: 12px;
+}
+
+.MuiButton-root:hover {
+    background-color: #B0B0B0 !important; /* Light gray hover effect */
+    color: #4A4A4A !important; /* Dark gray text color on hover */
+}
+
+/* For IconButton */
+.MuiAppBar-root .MuiIconButton-root {
+    margin-left: 8px; /* Spacing for icons */
+    margin-right: 8px;
+}
+
+/* For the dropdown menu, we can have a matching style */
+.MuiMenu-paper {
+    backdrop-filter: blur(5px); /* This will give a blurred effect for the content below the menu */
+    background-color: rgba(74, 74, 74, 0.9) !important; /* Slightly translucent gray */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Shadow for the dropdown menu */
+}
+
+/* Styling specific to the dialog */
+.MuiDialog-paper {
+    backdrop-filter: blur(10px); /* Blur effect for the content below the dialog */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* More pronounced shadow for the dialog */
+}

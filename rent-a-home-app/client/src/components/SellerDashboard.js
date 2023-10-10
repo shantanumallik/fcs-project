@@ -13,7 +13,7 @@ const SellerDashboard = ({ user }) => {
     useEffect(() => {
         async function fetchProperties() {
             try {
-                const response = await axios.get(`http://localhost:3001/api/properties/seller/${user.user._id}`);
+                const response = await axios.get(`https://192.168.2.244/api/properties/seller/${user.user._id}`);
                 setProperties(response.data);
                 setLoading(false);
             } catch (error) {
@@ -27,7 +27,7 @@ const SellerDashboard = ({ user }) => {
 
     const handleDeleteProperty = async (propertyId) => {
         try {
-            await axios.delete(`http://localhost:3001/api/properties/${propertyId}`, {
+            await axios.delete(`https://192.168.2.244/api/properties/${propertyId}`, {
                 params: {
                     sellerId: user.user._id
                 }

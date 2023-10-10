@@ -1,5 +1,7 @@
+/* Existing styles */
 .App {
   text-align: center;
+  background-color: #F7F8FA;  /* Light grayish color for app-wide background */
 }
 
 .App-logo {
@@ -37,22 +39,25 @@
   }
 }
 
-
-/* mern-app/client/src/App.css */
-
+/* Improved navigation styles */
 nav {
   display: flex;
   justify-content: space-around;
-  background-color: #333;
+  background: linear-gradient(160deg, #333 0%, #444 100%); /* subtle gradient for a modern touch */
   padding: 1rem 0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* Adds a shadow for depth */
 }
 
 nav a {
   color: white;
   text-decoration: none;
   padding: 0.5rem 1rem;
+  letter-spacing: 0.5px;  /* slight letter spacing */
+  font-weight: 500;  /* slightly bolder for better visibility */
+  transition: background-color 0.3s, color 0.3s;  /* smooth transition */
 }
 
 nav a:hover {
   background-color: #555;
+  color: #f7f8fa;
 }
