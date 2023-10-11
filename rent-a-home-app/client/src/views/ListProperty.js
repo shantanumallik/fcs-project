@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { TextField, Button, Container, Typography, Grid, Paper, Box } from '@mui/material';
-import './css/ListProperty.css';    
+import { handleListProperty, handleFileChange } from '../controllers/PropertyController';
+import './css/ListProperty.css'; 
 
 const ListProperty = ({ user }) => {
     const [title, setTitle] = useState('');
@@ -9,31 +9,6 @@ const ListProperty = ({ user }) => {
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);  
     const [message, setMessage] = useState('');
-
-    const handleListProperty = async () => {
-        const formData = new FormData();
-        formData.append('title', title);
-        formData.append('description', description);
-        formData.append('price', price);
-        formData.append('sellerId', user.user._id);
-        if (image) formData.append('image', image, image.name);
-
-        try {
-            await axios.post(  'https://192.168.2.244/api/properties/list', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-            setMessage('Property listed successfully!');
-        } catch (error) {
-            setMessage('Listing failed: ' + error.message);
-        }
-    };
-
-    const handleFileChange = (event) => {
-        const file = event.target.files[0];
-        if (file) setImage(file);
-    };
 
     return (
         <Container className="list-property-container">
@@ -82,7 +57,7 @@ const ListProperty = ({ user }) => {
                             className="upload-input"
                             id="raised-button-file"
                             type="file"
-                            onChange={handleFileChange}
+                            onChange={(event) => handleFileChange(event, setImage)}
                         />
                         <label htmlFor="raised-button-file">
                             <Button variant="contained" component="span">
@@ -96,7 +71,7 @@ const ListProperty = ({ user }) => {
                             variant="contained"
                             color="primary"
                             fullWidth
-                            onClick={handleListProperty}
+                            onClick={() => handleListProperty(title, description, price, user.user._id, image, setMessage)}
                         >
                             List Property
                         </Button>

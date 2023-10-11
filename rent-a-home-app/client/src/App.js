@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Signup from './components/Signup';
-import Login from './components/Login';
-import Navigation from './components/Navigation';
-import PegasusPage from './components/PegasusPage';
-import ListProperty from './components/ListProperty'; 
-import Properties from './components/Properties'; 
-import PropertyDetails from './components/PropertyDetails';
-import SellerDashboard from './components/SellerDashboard.js';
+import Signup from './views/Signup';
+import Login from './views/Login';
+import Navigation from './views/Navigation';
+import PegasusPage from './views/PegasusPage';
+import ListProperty from './views/ListProperty'; 
+import Properties from './views/Properties'; 
+import PropertyDetails from './views/PropertyDetails';
+import SellerDashboard from './views/SellerDashboard.js';
 
 function App() {
   const [user, setUser] = useState(null);
