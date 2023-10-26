@@ -1,12 +1,13 @@
+// SignupView.js
 import React, { useState } from 'react';
-import axios from 'axios';
 import {
-    TextField, Button, Container, Typography, FormControl,
-    InputLabel, Select, MenuItem, Paper, Box
+    TextField, Button, Typography, FormControl, InputLabel, 
+    Select, MenuItem, Paper, Box
 } from '@mui/material';
-import './css/Signup.css';   
+import SignupController from '../controllers/SignupController';
 
-const Signup = () => {
+const SignupView = () => {
+    // States
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [userType, setUserType] = useState('');
@@ -14,62 +15,59 @@ const Signup = () => {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [message, setMessage] = useState('');
+    const [qrCodeData, setQrCodeData] = useState('');
 
-    const config = {
-        headers: {
-            "Access-Control-Allow-Origin": "*"
-        }
+    // Handler to sign up the user
+    const handleSignupClick = async () => {
+        const data = {
+            username, password, userType, email, phone, address
+        };
+        const responseMessage = await SignupController.handleSignup(data);
+        setMessage(responseMessage);
     };
 
-    const handleSignup = async () => {
-        try {
-            const body = {
-                username,
-                password,
-                userType,
-                email,
-                phone,
-                address
-            };
-            await axios.post(  'https://192.168.2.244/api/users/signup', body, config);
-            setMessage('Signup successful!');
-        } catch (error) {
-            setMessage('Signup failed.');
-        }
+    // Handler to read the QR code from the uploaded image
+    const handleImageUpload = (event) => {
+        SignupController.handleImageUpload(event, setQrCodeData, setMessage);
     };
 
+    // Presentation layer
     return (
-        <Container className="signup-background" display="flex">
-            <Paper elevation={5} className="signup-paper">
-                <Typography variant="h4" gutterBottom>
-                    Signup
+        <Paper elevation={5} className="signup-paper">
+            <Typography variant="h4" gutterBottom>
+                Signup
+            </Typography>
+            <TextField className="signup-field" label="Username" variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} />
+            <TextField className="signup-field" label="Password" type="password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <FormControl variant="outlined" className="signup-field">
+                <InputLabel>User Type</InputLabel>
+                <Select value={userType} onChange={(e) => setUserType(e.target.value)} label="User Type">
+                    <MenuItem value="">
+                        <em>None</em>
+                    </MenuItem>
+                    <MenuItem value="seller_renter">Seller/Renter</MenuItem>
+                    <MenuItem value="buyer_rentee">Buyer/Rentee</MenuItem>
+                </Select>
+            </FormControl>
+            <TextField className="signup-field" label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <TextField className="signup-field" label="Phone Number" variant="outlined" value={phone} onChange={(e) => setPhone(e.target.value)} />
+            <TextField className="signup-field" label="Address" variant="outlined" value={address} onChange={(e) => setAddress(e.target.value)} />
+            <input type="file" accept="image/*" onChange={handleImageUpload} />
+            <Button className="signup-button" variant="contained" color="primary" onClick={handleSignupClick}>
+                Signup
+            </Button>
+            <Box className="signup-message">
+                <Typography variant="body1" color="textSecondary" gutterBottom>
+                    {message}
                 </Typography>
-                <TextField className="signup-field" label="Username" variant="outlined" value={username} onChange={(e) => setUsername(e.target.value)} />
-                <TextField className="signup-field" label="Password" type="password" variant="outlined" value={password} onChange={(e) => setPassword(e.target.value)} />
-                <FormControl variant="outlined" className="signup-field">
-                    <InputLabel>User Type</InputLabel>
-                    <Select value={userType} onChange={(e) => setUserType(e.target.value)} label="User Type">
-                        <MenuItem value="">
-                            <em>None</em>
-                        </MenuItem>
-                        <MenuItem value="seller_renter">Seller/Renter</MenuItem>
-                        <MenuItem value="buyer_rentee">Buyer/Rentee</MenuItem>
-                    </Select>
-                </FormControl>
-                <TextField className="signup-field" label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <TextField className="signup-field" label="Phone Number" variant="outlined" value={phone} onChange={(e) => setPhone(e.target.value)} />
-                <TextField className="signup-field" label="Address" variant="outlined" value={address} onChange={(e) => setAddress(e.target.value)} />
-                <Button className="signup-button" variant="contained" color="primary" onClick={handleSignup}>
-                    Signup
-                </Button>
-                <Box className="signup-message">
-                    <Typography variant="body1" color="textSecondary" gutterBottom>
-                        {message}
+                {qrCodeData && (
+                    <Typography variant="body1" color="textPrimary">
+                        QR Code Data: {qrCodeData}
                     </Typography>
-                </Box>
-            </Paper>
-        </Container>
+                )}
+            </Box>
+        </Paper>
     );
 }
 
-export default Signup;
+export default SignupView;

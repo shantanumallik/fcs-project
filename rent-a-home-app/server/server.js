@@ -3,15 +3,24 @@ const express = require('express');
 const cors = require('cors');
 const db = require('./db');
 const routes = require('./routes.js');
+const cloudinary = require('cloudinary').v2;
 
 const app = express();
 app.use(express.json()); 
 
 const corsOptions = {
-    origin: '*',
+    origin: process.env.CORS_ORIGIN_DEV,
     credentials: true,
     optionSuccessStatus: 200,
 };
+
+
+
+cloudinary.config({ 
+    cloud_name: 'dokrcy8vd', 
+    api_key: '619359627939352', 
+    api_secret: 'McaRxijFapspkNWv17JGpVnUMqk' 
+});
 
 app.use(cors(corsOptions));
 
@@ -21,7 +30,7 @@ db.connect().then(() => {
 
     const port = 3001;
     app.listen(port, () => {
-        console.log(`Server is running on port ${port}`);
+        //console.log(`Server is running on port ${port}`);
     });
 }).catch(error => {
     console.error("Failed to connect to DB", error);

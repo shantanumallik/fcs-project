@@ -12,7 +12,7 @@ import SellerDashboard from './views/SellerDashboard.js';
 function App() {
   const [user, setUser] = useState(null);
 useEffect(() =>{
-console.log('user:' + user)
+//console.log('user:' + user)
 }, [user])
 
   return (

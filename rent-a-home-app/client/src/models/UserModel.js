@@ -2,8 +2,9 @@ import axios from 'axios';
 
 const config = {
     headers: {
-        "Access-Control-Allow-Origin": "*"
-    }
+        "Access-Control-Allow-Origin": `${process.env.REACT_APP_API_DOMAIN}`,
+    },
+    withCredentials: true
 };
 
 export const loginUser = async (username, password) => {

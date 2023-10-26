@@ -20,9 +20,19 @@ router.post('/list', upload.single('image'), async (req, res) => {
 
     // Assuming you want to store the image as a base64 string. This is not efficient for large-scale applications.
     // Consider storing images on cloud storage like AWS S3 and saving the URL in the database.
-    const image = req.file ? req.file.buffer.toString('base64') : null;
+    let imageUrl = null;
+    if (req.file) {
+        try {
+            const result = await cloudinary.uploader.upload_stream({ resource_type: 'raw' }, (error, result) => {
+                if (error) throw new Error(error);
+                imageUrl = result.url;
+            }).end(req.file.buffer);
+        } catch (error) {
+            return res.status(500).send('Failed to upload image to Cloudinary.');
+        }
+    }
     
-    const property = new Property(title, description, price, sellerId, image ? [image] : []);
+    const property = new Property(title, description, price, sellerId, imageUrl ? [imageUrl] : []);
 
     try {
         await propertiesCollection.insertOne(property);
@@ -33,15 +43,15 @@ router.post('/list', upload.single('image'), async (req, res) => {
 });
 // Get all properties listed by a specific seller
 router.get('/seller/:sellerId', async (req, res) => {
-    console.log('seller params: ' + JSON.stringify(req.params));
+    // //console.log('seller params: ' + JSON.stringify(req.params));
 
     const { sellerId } = req.params;
-    console.log('seller' + sellerId);
+    //console.log('seller' + sellerId);
     const propertiesCollection = db.getDB().collection("Property");
 
     try {
         const properties = await propertiesCollection.find({ sellerId: sellerId }).toArray();
-        console.log('Properties: ' + properties);
+        //console.log('Properties: ' + properties);
         res.json(properties);
     } catch (error) {
         res.status(500).send("Server error");
@@ -50,7 +60,6 @@ router.get('/seller/:sellerId', async (req, res) => {
 
 // Get all properties
 router.get('/', async (req, res) => {
-    console.log('here')
     const propertiesCollection = db.getDB().collection("Property");
 
     try {
@@ -80,40 +89,53 @@ router.get('/:propertyId', async (req, res) => {
 router.put('/:propertyId', async (req, res) => {
     const propertiesCollection = db.getDB().collection("Property");
 
-    // Ensure only the property owner can modify the listing
+    const { sellerId, title, description, price, images } = req.body;
+
+    // Fetch the original property from the database
     const originalProperty = await propertiesCollection.findOne({ _id: ObjectId(req.params.propertyId) });
-    if (originalProperty.sellerId !== req.body.sellerId) {
+
+    if (!originalProperty) {
+        return res.status(404).send('Property not found');
+    }
+
+    // Ensure only the property owner can modify the listing
+    if (originalProperty.sellerId !== sellerId) {
         return res.status(403).send('You do not have permission to modify this property');
     }
 
+    // Prepare updated data for the property
     const updatedData = {
-        title: req.body.title,
-        description: req.body.description,
-        price: req.body.price,
-        images: req.body.images
+        title,
+        description,
+        price,
+        images
     };
 
     try {
         const result = await propertiesCollection.updateOne({ _id: ObjectId(req.params.propertyId) }, { $set: updatedData });
+
         if (result.matchedCount === 0) {
             return res.status(404).send('Property not found');
         }
+
         res.status(200).send('Property updated successfully');
     } catch (err) {
         res.status(500).send(err.message);
     }
 });
 
+
 // Delete a property by ID
-router.delete('/:propertyId', async (req, res) => {
+router.delete('/delete/:propertyId', async (req, res) => {
+    //console.log('deleting property')
     const propertiesCollection = db.getDB().collection("Property");
-    console.log('propertyId: ' + req.params.propertyId);
+    //console.log('propertyId: ' + req.params.propertyId);
 
     // Ensure only the property owner can delete the listing
     const originalProperty = await propertiesCollection.findOne({ _id: ObjectId(req.params.propertyId) });
-    console.log("property: ", originalProperty);
-    console.log("originalSeller: ", originalProperty.sellerId);
-    console.log("currentSeller: ", req.query);
+    //console.log("property: ", originalProperty);
+    //console.log("originalSeller: ", originalProperty.sellerId);
+    //console.log("currentSeller: ", req.query);
     if (originalProperty.sellerId !== req.query.sellerId) {
         return res.status(403).send('You do not have permission to delete this property');
     }

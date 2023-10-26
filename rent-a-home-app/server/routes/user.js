@@ -6,9 +6,12 @@ const db = require('../db');
 
 const router = express.Router();
 
+const cookieParser = require('cookie-parser');
+router.use(cookieParser());
+
 // Signup Route
 router.post('/signup', async (req, res) => {
-    console.log("Signup request");
+    //console.log("Signup request");
     const usersCollection = db.getDB().collection("User");
     const { username, password, userType, email, phone, address } = req.body;
 
@@ -18,7 +21,7 @@ router.post('/signup', async (req, res) => {
         return res.status(400).send('Invalid user type');
     }
 
-    console.log(`User: ${username}, Password: ${password}, Type: ${userType}`);
+    //console.log(`User: ${username}, Password: ${password}, Type: ${userType}`);
     
     const hashedPassword = await bcrypt.hash(password, 10);
     const userDocument = {
@@ -60,13 +63,20 @@ router.post('/login', async (req, res) => {
 
         // Generate JWT token if authenticated
         const token = jwt.sign({ userId: user._id.toString() }, process.env.SECRET_KEY, {
-            expiresIn: '1h' // The token will expire in 1 hour. Adjust as needed.
+            expiresIn: '1h'
         });
-        console.log("userId:" + user._id.toString())
+
+        // Set the JWT token as a cookie
+        res.cookie('session_token', token, {
+            httpOnly: true,
+            // secure: true,  // remember to serve your app over HTTPS
+            maxAge: 3600000 // 1 hour
+        });
+
+        //console.log("userId:" + user._id.toString())
 
         return res.json({
             message: 'Login successful',
-            token,
             userId: user._id.toString(),
             user
         });
@@ -84,7 +94,8 @@ router.put('/:userId', async (req, res) => {
     const userIdFromParam = req.params.userId;
 
     // Assuming you send the JWT token in the header as Bearer token
-    const token = req.headers.authorization.split(" ")[1];
+    // const token = req.headers.authorization.split(" ")[1];
+    const token = req.cookies.session_token;
 
     if (!token) {
         return res.status(401).send('Authentication token missing');

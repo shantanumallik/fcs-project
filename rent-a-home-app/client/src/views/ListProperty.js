@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
-import { TextField, Button, Container, Typography, Grid, Paper, Box } from '@mui/material';
+import { 
+    TextField, Button, Container, Typography, Grid, 
+    Paper, Box, FormControlLabel, Checkbox 
+} from '@mui/material';
 import { handleListProperty, handleFileChange } from '../controllers/PropertyController';
-import './css/ListProperty.css'; 
+import './css/ListProperty.css';
 
 const ListProperty = ({ user }) => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
-    const [image, setImage] = useState(null);  
+    const [image, setImage] = useState(null);
+    const [location, setLocation] = useState('');   // Location
+    const [amenities, setAmenities] = useState({ pool: false, gym: false, wifi: false });   // Sample amenities
+    const [availabilityDate, setAvailabilityDate] = useState('');  // Date of availability
     const [message, setMessage] = useState('');
 
     return (
@@ -66,12 +72,67 @@ const ListProperty = ({ user }) => {
                         </label>
                         {image && <Typography variant="body2">{image.name}</Typography>}
                     </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Location"
+                            variant="outlined"
+                            value={location}
+                            onChange={(e) => setLocation(e.target.value)}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            fullWidth
+                            label="Date of Availability"
+                            variant="outlined"
+                            type="date"
+                            value={availabilityDate}
+                            onChange={(e) => setAvailabilityDate(e.target.value)}
+                            InputLabelProps={{
+                                shrink: true,
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="h6" gutterBottom>
+                            Amenities:
+                        </Typography>
+                        <FormControlLabel
+                            control={
+                                <Checkbox 
+                                    checked={amenities.pool} 
+                                    onChange={(e) => setAmenities(prev => ({ ...prev, pool: e.target.checked }))}
+                                />
+                            }
+                            label="Pool"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox 
+                                    checked={amenities.gym} 
+                                    onChange={(e) => setAmenities(prev => ({ ...prev, gym: e.target.checked }))}
+                                />
+                            }
+                            label="Gym"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox 
+                                    checked={amenities.wifi} 
+                                    onChange={(e) => setAmenities(prev => ({ ...prev, wifi: e.target.checked }))}
+                                />
+                            }
+                            label="Wi-Fi"
+                        />
+                        {/* Add more amenities as needed */}
+                    </Grid>
                     <Grid item xs={12}>
                         <Button
                             variant="contained"
                             color="primary"
                             fullWidth
-                            onClick={() => handleListProperty(title, description, price, user.user._id, image, setMessage)}
+                            onClick={() => handleListProperty(title, description, price, location, amenities, availabilityDate, user.user._id, image, setMessage)}
                         >
                             List Property
                         </Button>

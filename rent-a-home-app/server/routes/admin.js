@@ -8,7 +8,8 @@ const router = express.Router();
 
 // Middleware to ensure the user is an admin
 const ensureAdmin = async (req, res, next) => {
-    const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+    // const token = req.headers.authorization && req.headers.authorization.split(" ")[1];
+    const token = req.cookies.session_token
     if (!token) {
         return res.status(401).send('Authentication token missing');
     }

@@ -9,7 +9,7 @@ async function connect() {
     await client.connect();
 
     _db = client.db(process.env.DB_NAME); // Replace 'YOUR_DB_NAME' if you want to source this from .env as well
-    console.log("Connected successfully");
+    //console.log("Connected successfully");
 }
 
 function getDB() {
