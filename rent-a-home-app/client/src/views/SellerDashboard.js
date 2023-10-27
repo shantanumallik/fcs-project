@@ -3,7 +3,7 @@ import axios from 'axios';
 import {
     Container, Typography, Grid, Paper, Button, Dialog,
     DialogActions, DialogContent, DialogContentText, DialogTitle,
-    TextField, CircularProgress, Box, IconButton
+    TextField, CircularProgress, Box, IconButton, InputAdornment
 } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -32,12 +32,15 @@ const SellerDashboard = ({ user }) => {
         fetchProperties();
     }, [user.user._id]);
 
-    // Edit property handlers
+    const handleEditImage = (url) => {
+        setPropertyToEdit(prev => ({ ...prev, imageUrl: url }));
+    };
+
     const handleEditProperty = async () => {
         try {
             await axios.put(`${process.env.REACT_APP_API_DOMAIN}/api/properties/${propertyToEdit._id}`, {
                 ...propertyToEdit,
-                sellerId: user.user._id // add the sellerId
+                sellerId: user.user._id
             });
             setProperties(prevProperties => prevProperties.map(p => p._id === propertyToEdit._id ? propertyToEdit : p));
             closeEditDialog();
@@ -47,7 +50,10 @@ const SellerDashboard = ({ user }) => {
     };
 
     const openEditDialog = (property) => {
-        setPropertyToEdit({ ...property });
+        setPropertyToEdit({ 
+            ...property,
+            imageUrl: property.imageUrl || ''
+        });
         setEditDialogOpen(true);
     };
 
@@ -56,17 +62,15 @@ const SellerDashboard = ({ user }) => {
         setEditDialogOpen(false);
     };
 
-    // Delete property handlers
     const handleDeleteProperty = async (propertyId) => {
         try {
-            await axios.delete(`${process.env.REACT_APP_API_DOMAIN}/api/properties/delete/${propertyId}?sellerId=${user.user._id}`); // add the sellerId as a query parameter
+            await axios.delete(`${process.env.REACT_APP_API_DOMAIN}/api/properties/delete/${propertyId}?sellerId=${user.user._id}`);
             setProperties(prevProperties => prevProperties.filter(p => p._id !== propertyId));
             closeDeleteDialog();
         } catch (error) {
             console.error("Error deleting property", error);
         }
     };
-    
 
     const openDeleteDialog = (propertyId) => {
         setPropertyToDelete(propertyId);
@@ -130,6 +134,13 @@ const SellerDashboard = ({ user }) => {
                         fullWidth
                         multiline
                         rows={4}
+                        margin="dense"
+                    />
+                    <TextField
+                        label="Image URL"
+                        value={propertyToEdit.imageUrl}
+                        onChange={(e) => handleEditImage(e.target.value)}
+                        fullWidth
                         margin="dense"
                     />
                 </DialogContent>
