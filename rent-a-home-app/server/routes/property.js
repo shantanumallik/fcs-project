@@ -5,42 +5,55 @@ const db = require('../db');
 const Property = require('../models/Property');
 const multer = require('multer');
 const upload = multer();
+const cloudinary = require('cloudinary').v2;
+cloudinary.config({ 
+    cloud_name: 'dokrcy8vd', 
+    api_key: '619359627939352', 
+    api_secret: 'McaRxijFapspkNWv17JGpVnUMqk' 
+});
 
 const router = express.Router();
 
 // Create a new property listing
 router.post('/list', upload.single('image'), async (req, res) => {
     const propertiesCollection = db.getDB().collection("Property");
-
-    // Extracting fields from the form data
     const title = req.body.title;
     const description = req.body.description;
     const price = req.body.price;
     const sellerId = req.body.sellerId;
+    const location = req.body.location;               // New attribute
+    const availabilityDate = req.body.availabilityDate;
+    const amenityList = JSON.parse(req.body.amenities); 
+    console.log(JSON.stringify(amenityList))// New attribute
+    const amenities = {                               // New attribute
+        pool: amenityList.pool === true,
+        gym: amenityList.gym === true,
+        wifi: amenityList.wifi === true
+    };
 
-    // Assuming you want to store the image as a base64 string. This is not efficient for large-scale applications.
-    // Consider storing images on cloud storage like AWS S3 and saving the URL in the database.
-    let imageUrl = null;
-    if (req.file) {
-        try {
-            const result = await cloudinary.uploader.upload_stream({ resource_type: 'raw' }, (error, result) => {
-                if (error) throw new Error(error);
-                imageUrl = result.url;
-            }).end(req.file.buffer);
-        } catch (error) {
-            return res.status(500).send('Failed to upload image to Cloudinary.');
-        }
-    }
-    
-    const property = new Property(title, description, price, sellerId, imageUrl ? [imageUrl] : []);
+    let imageUrl = "NA";
 
     try {
+        if (req.file) {
+            const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, { resource_type: 'image' });
+            imageUrl = result.url;
+            console.log(imageUrl);
+        }
+        console.log(imageUrl);
+
+        const property = new Property(title, description, price, sellerId, imageUrl, location, availabilityDate, amenities);
         await propertiesCollection.insertOne(property);
         res.status(201).send('Property listed successfully!');
-    } catch (err) {
-        res.status(500).send(err.message);
+
+    } catch (error) {
+        if (error.message && error.message.includes("Failed to upload image to Cloudinary")) {
+            res.status(500).send(error.message);
+        } else {
+            res.status(500).send('Internal Server Error');
+        }
     }
 });
+
 // Get all properties listed by a specific seller
 router.get('/seller/:sellerId', async (req, res) => {
     // //console.log('seller params: ' + JSON.stringify(req.params));

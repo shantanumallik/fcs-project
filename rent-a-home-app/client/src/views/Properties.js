@@ -14,7 +14,8 @@ const Properties = () => {
     const [filterName, setFilterName] = useState('');
     const [filterBudget, setFilterBudget] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 9;
+    const [filteredProperties, setFilteredProperties] = useState([]);
+    const itemsPerPage = 3;
 
     // New filter states
     const [filterLocation, setFilterLocation] = useState('');
@@ -36,13 +37,13 @@ const Properties = () => {
 
     useEffect(() => {
         const filtered = allProperties.filter(property => 
-            (!filterName || property.title.toLowerCase().includes(filterName.toLowerCase())) &&
-            (!filterBudget || property.price <= parseFloat(filterBudget)) &&
-            (!filterLocation || property.location.toLowerCase().includes(filterLocation.toLowerCase())) &&
-            (!filterDate || (new Date(property.availabilityDate)) >= (new Date(filterDate))) &&
+            (!filterName || (property.title && property.title.toLowerCase().includes(filterName.toLowerCase()))) &&
+            (!filterBudget || (property.price && property.price <= parseFloat(filterBudget))) &&
+            (!filterLocation || (property.location && property.location.toLowerCase().includes(filterLocation.toLowerCase()))) &&
+            (!filterDate || (property.availabilityDate && (new Date(property.availabilityDate)) >= (new Date(filterDate)))) &&
             Object.keys(filterAmenities).every(key => !filterAmenities[key] || (property.amenities && property.amenities[key]))
         );
-
+        setFilteredProperties(filtered);
         const paginated = filtered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
         setDisplayedProperties(paginated);
     }, [allProperties, filterName, filterBudget, filterLocation, filterAmenities, filterDate, currentPage]);
@@ -142,8 +143,8 @@ const Properties = () => {
                                     <CardMedia
                                         component="img"
                                         height="140"
-                                        image={property.images && property.images.length > 0 ? property.images[0] : ""}
-                                        alt={property.title}
+                                        image={property.imageUrl ? property.imageUrl : ""}
+                                        alt={property.imageUrl ? property.imageUrl[0]: "NA"}
                                         className="properties-image"
                                     />
                                     <CardContent>
@@ -165,7 +166,7 @@ const Properties = () => {
 
                 <Box mt={4} display="flex" justifyContent="center">
                     <Pagination 
-                        count={Math.ceil(allProperties.length / itemsPerPage)} 
+                        count={Math.ceil(filteredProperties.length / itemsPerPage)} 
                         page={currentPage}
                         onChange={(event, page) => setCurrentPage(page)}
                         className="properties-pagination"
