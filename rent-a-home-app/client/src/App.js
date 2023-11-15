@@ -8,12 +8,26 @@ import ListProperty from './views/ListProperty';
 import Properties from './views/Properties'; 
 import PropertyDetails from './views/PropertyDetails';
 import SellerDashboard from './views/SellerDashboard.js';
+import EditProfile from './views/EditProfile.js';
+import MyDocuments from './views/MyDocuments.js';
+import Cookies from 'js-cookie';
 
 function App() {
-  const [user, setUser] = useState(null);
-useEffect(() =>{
-//console.log('user:' + user)
-}, [user])
+  const [user, setUser] = useState(() => {
+    // Load user from cookies on initial render
+    const savedUser = Cookies.get('user');
+    return savedUser ? JSON.parse(savedUser) : null;
+  });
+
+  useEffect(() => {
+    if (user) {
+      // Save user to cookies when user state updates
+      Cookies.set('user', JSON.stringify(user), { expires: 7 }); // Expires in 7 days
+    } else {
+      // Clear user cookie when user logs out
+      Cookies.remove('user');
+    }
+  }, [user]);
 
   return (
     <Router>
@@ -27,6 +41,8 @@ useEffect(() =>{
         <Route path="/properties" element={<Properties />} />
         <Route path="/properties/:propertyId" element={<PropertyDetails user={user} />} />
         <Route path="/dashboard/:sellerId" element={<SellerDashboard user={user}/>} />
+        <Route path="/edit-profile/:userId" element={<EditProfile user={user} />} />
+        <Route path="/docs/:userId" element={<MyDocuments user={user} />} />
       </Routes>
     </Router>
   );

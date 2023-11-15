@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json()); 
 
 const corsOptions = {
-    origin: [process.env.CORS_ORIGIN, process.env.RAZORPAY_ORIGIN],
+    origin: [process.env.CORS_ORIGIN_DEV, process.env.RAZORPAY_ORIGIN],
     credentials: true,
     optionSuccessStatus: 200,
 };

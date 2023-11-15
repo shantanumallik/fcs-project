@@ -17,10 +17,6 @@ router.post('/signup', async (req, res) => {
     const usersCollection = db.getDB().collection("User");
     const { username, password, userType, email, phone, address, eKYCEmail, eKYCPassword } = req.body;
     try {
-        data = {
-            email: 'shantanu23140@iiitd.ac.in',
-            password: 'donjub-jydKa4-fegsoc',
-        }
         process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
         const kycResponse = await axios.post('https://192.168.3.39:5000/kyc', {
             email: eKYCEmail, 
@@ -32,19 +28,6 @@ router.post('/signup', async (req, res) => {
             return res.status(401).send('eKYC verification failed');
         }
     } catch (error) {
-        
-    // Optionally log more specific parts of the error
-    // if (error.response) {
-    //     // The request was made and the server responded with a status code
-    //     // that falls out of the range of 2xx
-    //     console.error(error.response.data);
-    //     console.error(error.response.status);
-    //     console.error(error.response.headers);
-    // } else if (error.request) {
-    //     // The request was made but no response was received
-    //     console.error(error.request);
-    // }
-
     return res.status(500).send('eKYC verification error');
 }
 

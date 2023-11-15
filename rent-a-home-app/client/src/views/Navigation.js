@@ -7,6 +7,8 @@ import {
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import HomeIcon from '@mui/icons-material/Home';
+import EditIcon from '@mui/icons-material/Edit'; // New import for Edit Icon
+
 
 import './css/Navigation.css';
 
@@ -67,6 +69,14 @@ function Navigation({ user, setUser }) {
                                 <Typography variant="body1">
                                     Welcome, {user.user.username}
                                 </Typography>
+                            </MenuItem>
+                            <MenuItem component={Link} to={`/edit-profile/${user.user._id}`}>
+                                <EditIcon sx={{ mr: 1 }} />
+                                Edit Profile
+                            </MenuItem>
+                            <MenuItem component={Link} to={`/docs/${user.user._id}`}>
+                                <EditIcon sx={{ mr: 1 }} />
+                                My Documents
                             </MenuItem>
                             <MenuItem component={Link} to="/properties">View Properties</MenuItem>
                             {user.user.userType === 'seller_renter' && (

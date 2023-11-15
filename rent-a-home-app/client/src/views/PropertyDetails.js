@@ -40,6 +40,9 @@ const PropertyDetails = ({ user }) => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_DOMAIN}/api/properties/submit-final-contract`, {
                 propertyId,
+                sellerId: property.sellerId || 'unavailable',
+                buyerId: user.user._id,
+                tenant: property.tenant || 'unavailable',
                 finalContractText: contractText
             });
             console.log(response.data); // Handle the response
@@ -56,6 +59,7 @@ const PropertyDetails = ({ user }) => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_DOMAIN}/api/properties/${propertyId}`);
                 setProperty(response.data);
+                console.log(JSON.stringify(response.data));
             } catch (err) {
                 setError('Failed to fetch property. ' + err.message);
             }
@@ -112,6 +116,11 @@ const PropertyDetails = ({ user }) => {
                     <Grid item xs={12}>
                         <Typography variant="body1">
                             {property.description}
+                        </Typography>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Typography variant="subtitle1" color="textSecondary">
+                            Owner: {property.owner || 'Not Available'}
                         </Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>

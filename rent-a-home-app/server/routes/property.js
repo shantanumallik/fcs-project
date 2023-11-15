@@ -1,11 +1,15 @@
 // routes/property.js
 const express = require('express');
+const PDFDocument = require('pdfkit');
 const { ObjectId } = require('mongodb');
 const db = require('../db');
 const Property = require('../models/Property');
 const multer = require('multer');
 const upload = multer();
+const streamBuffers = require('stream-buffers');
 const cloudinary = require('cloudinary').v2;
+
+
 cloudinary.config({ 
     cloud_name: 'dokrcy8vd', 
     api_key: '619359627939352', 
@@ -30,6 +34,8 @@ router.post('/list', upload.single('image'), async (req, res) => {
         gym: amenityList.gym === true,
         wifi: amenityList.wifi === true
     };
+    const owner = sellerId;
+    const tenant = ""; 
 
     let imageUrl = "NA";
 
@@ -41,7 +47,7 @@ router.post('/list', upload.single('image'), async (req, res) => {
         }
         console.log(imageUrl);
 
-        const property = new Property(title, description, price, sellerId, imageUrl, location, availabilityDate, amenities);
+        const property = new Property(title, description, price, sellerId, imageUrl, location, availabilityDate, amenities, 'NA', 'rent', owner, tenant);
         await propertiesCollection.insertOne(property);
         res.status(201).send('Property listed successfully!');
 
@@ -103,35 +109,68 @@ Buyer: ____________________
     res.status(200).json({ contractText });
 });
 
-rrouter.post('/submit-final-contract', async (req, res) => {
-    const { propertyId, finalContractText, contractType } = req.body; // include contractType to determine if it's a rental or a purchase
+router.post('/submit-final-contract', async (req, res) => {
+    console.log('submit-final-contract')
+    const { propertyId, finalContractText, contractType, sellerId, buyerId, tenant } = req.body;
 
-    if (!propertyId || !finalContractText || !contractType) {
-        return res.status(400).send('Missing property ID, contract text, or contract type');
-    }
+    // if (!propertyId || !finalContractText || !contractType) {
+    //     return res.status(400).send('Missing required data');
+    // }
 
     const propertiesCollection = db.getDB().collection("Property");
+    console.log('loaded all properties');
+
 
     try {
-        let update = { 
-            $set: { 
-                finalContractText: finalContractText,
-                status: contractType === 'purchase' ? 'sold' : 'rented'
-            } 
-        };
+        // Generate PDF
+        const doc = new PDFDocument();
+        const bufferStream = new streamBuffers.WritableStreamBuffer({
+            initialSize: (100 * 1024),
+            incrementAmount: (10 * 1024)
+        });
 
-        if (contractType !== 'purchase') {
-            // For rental, update availabilityDate to a future date when it becomes available again
-            update.$set.availabilityDate = new Date(/* set your future date here */);
-        }
+        doc.pipe(bufferStream);
+        doc.fontSize(12).text(finalContractText, {
+            align: 'left'
+        });
+        doc.end();
 
-        const result = await propertiesCollection.updateOne({ _id: ObjectId(propertyId) }, update);
+        // console.log('Final Contract Text:', finalContractText);
 
-        if (result.matchedCount === 0) {
-            return res.status(404).send('Property not found');
-        }
+        // In the error handling of the stream
+        bufferStream.on('error', err => {
+            console.error('Stream error:', err);
+            res.status(500).send('Error generating PDF');
+        });
 
-        res.status(200).send('Final contract submitted successfully');
+        bufferStream.on('finish', async () => {
+            const pdfData = bufferStream.getContents().toString('base64');
+            console.log('generated pdf')
+            // Upload to Cloudinary
+            const result = await cloudinary.uploader.upload(`data:application/pdf;base64,${pdfData}`, { resource_type: 'raw' });
+            const contractUrl = result.url;
+            console.log('contract URL: ' + contractUrl);
+
+            let update = {
+                $set: {
+                    contractUrl: contractUrl,
+                    status: contractType === 'purchase' ? 'sold' : 'rented',
+                    // Update owner and tenant based on contract type
+                    owner: contractType === 'purchase' ? buyerId : (sellerId || "NA"), // Update owner if sold
+                    tenant: contractType === 'rent' ? buyerId : (tenant || "NA") // Update tenant if rented
+                }
+            };
+
+            // Update property status in the database
+            const updateResult = await propertiesCollection.updateOne({ _id: ObjectId(propertyId) }, update);
+
+            if (updateResult.matchedCount === 0) {
+                return res.status(404).send('Property not found');
+            }
+
+            res.status(200).send('Final contract submitted and uploaded successfully');
+        });
+
     } catch (err) {
         res.status(500).send(err.message);
     }
@@ -225,6 +264,28 @@ router.delete('/delete/:propertyId', async (req, res) => {
             return res.status(404).send('Property not found');
         }
         res.status(200).send('Property deleted successfully');
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
+
+// Get all contracts for a user
+router.get('/user-contracts/:userId', async (req, res) => {
+    const { userId } = req.params;
+    const propertiesCollection = db.getDB().collection("Property");
+
+    try {
+        // Fetch properties where the user is either the seller or the buyer
+        const contracts = await propertiesCollection.find({
+            $or: [{ sellerId: userId }, { tenant: userId }, { owner: userId }]
+        }).toArray();
+
+        if (!contracts) {
+            return res.status(404).send('No contracts found for this user');
+        }
+
+        res.status(200).json(contracts);
     } catch (err) {
         res.status(500).send(err.message);
     }

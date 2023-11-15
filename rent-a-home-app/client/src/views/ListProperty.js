@@ -8,17 +8,19 @@ import { handleListProperty, handleFileChange } from '../controllers/PropertyCon
 import './css/ListProperty.css';
 
 const ListProperty = ({ user }) => {
+    const today = new Date();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
     const [location, setLocation] = useState('');
     const [amenities, setAmenities] = useState({ pool: false, gym: false, wifi: false });
-    const [availabilityDate, setAvailabilityDate] = useState('');
+    const [availabilityDate, setAvailabilityDate] = useState(today.toISOString().split('T')[0]);
     const [propertyType, setPropertyType] = useState('rent'); // Property type: rent or sale
     const [message, setMessage] = useState('');
 
     const onSubmit = () => {
+        console.log("Availability: " + availabilityDate);
         handleListProperty(
             title, 
             description, 
@@ -105,7 +107,10 @@ const ListProperty = ({ user }) => {
                             variant="outlined"
                             type="date"
                             value={availabilityDate}
-                            onChange={(e) => setAvailabilityDate(e.target.value)}
+                            onChange={(e) => {
+                                setAvailabilityDate(e.target.value);
+                                console.log(e.target.value);
+                            }}
                             InputLabelProps={{
                                 shrink: true,
                             }}
