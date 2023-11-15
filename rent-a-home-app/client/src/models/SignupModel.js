@@ -13,6 +13,7 @@ const SignupModel = {
             await axios.post(`${process.env.REACT_APP_API_DOMAIN}/api/users/signup`, data, config);
             return 'Signup successful!';
         } catch (error) {
+            console.log(error)
             return 'Signup failed.';
         }
     }

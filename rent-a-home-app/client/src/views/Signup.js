@@ -17,10 +17,14 @@ const SignupView = () => {
     const [message, setMessage] = useState('');
     const [qrCodeData, setQrCodeData] = useState('');
 
+    const [eKYCEmail, setEKYCEmail] = useState('');
+    const [eKYCPassword, setEKYCPassword] = useState('');
+
     // Handler to sign up the user
     const handleSignupClick = async () => {
         const data = {
-            username, password, userType, email, phone, address
+            username, password, userType, email, phone, address,
+            eKYCEmail, eKYCPassword // Include eKYC fields in the data object
         };
         const responseMessage = await SignupController.handleSignup(data);
         setMessage(responseMessage);
@@ -52,10 +56,20 @@ const SignupView = () => {
             <TextField className="signup-field" label="Email" variant="outlined" value={email} onChange={(e) => setEmail(e.target.value)} />
             <TextField className="signup-field" label="Phone Number" variant="outlined" value={phone} onChange={(e) => setPhone(e.target.value)} />
             <TextField className="signup-field" label="Address" variant="outlined" value={address} onChange={(e) => setAddress(e.target.value)} />
+            {/* eKYC verification fields */}
+            <Typography variant="h5" gutterBottom>
+                eKYC Verification
+            </Typography>
+            <TextField className="signup-field" label="eKYC Email" variant="outlined" value={eKYCEmail} onChange={(e) => setEKYCEmail(e.target.value)} />
+            <TextField className="signup-field" label="eKYC Password" type="password" variant="outlined" value={eKYCPassword} onChange={(e) => setEKYCPassword(e.target.value)} />
+
+            {/* File upload and signup button */}
             <input type="file" accept="image/*" onChange={handleImageUpload} />
             <Button className="signup-button" variant="contained" color="primary" onClick={handleSignupClick}>
                 Signup
             </Button>
+
+            {/* Message display */}
             <Box className="signup-message">
                 <Typography variant="body1" color="textSecondary" gutterBottom>
                     {message}

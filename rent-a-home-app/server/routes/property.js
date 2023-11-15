@@ -71,6 +71,72 @@ router.get('/seller/:sellerId', async (req, res) => {
     }
 });
 
+// Add to your existing property.js file
+
+// POST route to generate a rental contract
+router.post('/generate-contract', async (req, res) => {
+    const { propertyId, sellerId, buyerId, rentalTerms } = req.body;
+
+    // Basic validation
+    if (!propertyId || !sellerId || !buyerId || !rentalTerms) {
+        return res.status(400).send('Missing required contract details');
+    }
+
+    // Generate contract text
+    const contractText = `Rental Contract
+-------------------------
+Property ID: ${propertyId}
+Seller ID: ${sellerId}
+Buyer ID: ${buyerId}
+
+Rental Terms:
+${rentalTerms}
+
+This contract is legally binding and signifies an agreement between the buyer and seller of the property.
+
+Signed:
+Seller: ____________________
+Buyer: ____________________
+`;
+
+    // Send the contract text to the frontend
+    res.status(200).json({ contractText });
+});
+
+rrouter.post('/submit-final-contract', async (req, res) => {
+    const { propertyId, finalContractText, contractType } = req.body; // include contractType to determine if it's a rental or a purchase
+
+    if (!propertyId || !finalContractText || !contractType) {
+        return res.status(400).send('Missing property ID, contract text, or contract type');
+    }
+
+    const propertiesCollection = db.getDB().collection("Property");
+
+    try {
+        let update = { 
+            $set: { 
+                finalContractText: finalContractText,
+                status: contractType === 'purchase' ? 'sold' : 'rented'
+            } 
+        };
+
+        if (contractType !== 'purchase') {
+            // For rental, update availabilityDate to a future date when it becomes available again
+            update.$set.availabilityDate = new Date(/* set your future date here */);
+        }
+
+        const result = await propertiesCollection.updateOne({ _id: ObjectId(propertyId) }, update);
+
+        if (result.matchedCount === 0) {
+            return res.status(404).send('Property not found');
+        }
+
+        res.status(200).send('Final contract submitted successfully');
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+});
+
 // Get all properties
 router.get('/', async (req, res) => {
     const propertiesCollection = db.getDB().collection("Property");

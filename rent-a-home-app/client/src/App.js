@@ -25,7 +25,7 @@ useEffect(() =>{
         <Route path="/pegasus" element={<PegasusPage />} />
         <Route path="/list-property" element={<ListProperty user={user} />} /> 
         <Route path="/properties" element={<Properties />} />
-        <Route path="/properties/:propertyId" element={<PropertyDetails />} />
+        <Route path="/properties/:propertyId" element={<PropertyDetails user={user} />} />
         <Route path="/dashboard/:sellerId" element={<SellerDashboard user={user}/>} />
       </Routes>
     </Router>

@@ -1,11 +1,12 @@
 .signup-background {
-    display: flex !important;
+    display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     height: 100vh;
     padding: 1rem;
-    /*background-image: url('../../../public/backgrounds/urban_light.jpg'); /* Light urban texture or image */
+    /* Uncomment and update the background image URL as needed */
+    /* background-image: url('../../../public/backgrounds/urban_light.jpg'); */
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -13,13 +14,24 @@
 
 .signup-paper {
     padding: 2rem;
-    width: 350px;
+    width: 350px; /* Adjust the width as needed */
     background-color: rgba(255, 255, 255, 0.9); /* Near white with transparency */
     border-radius: 15px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    display: flex;
+    flex-direction: column; /* Ensures elements inside are stacked vertically */
+    align-items: center; /* Center aligns children horizontally */
 }
 
 .signup-field, .signup-button, .signup-message {
     margin: 1rem 0;
+    width: 100%; /* Ensure full width for child elements */
+    /* If elements are still not stacking correctly, consider adding display: flex; */
+}
+
+/* Additional CSS for the eKYC label, if needed */
+.eKYC-label {
     width: 100%;
+    text-align: center;
+    margin-top: 2rem;
 }

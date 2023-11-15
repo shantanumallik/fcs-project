@@ -1,4 +1,3 @@
-// models/Property.js
 class Property {
     constructor(
         title, 
@@ -6,18 +5,21 @@ class Property {
         price, 
         sellerId, 
         imageUrl, 
-        location,           // new attribute
-        availabilityDate,   // new attribute
-        amenities = {}      // new attribute
+        location,
+        availabilityDate,
+        amenities = {},
+        type = 'rent' // 'rent' or 'sale'
     ) {
         this.title = title;
         this.description = description;
         this.price = price;
-        this.sellerId = sellerId; // The user who listed the property
-        this.imageUrl = imageUrl; // image URLs
-        this.location = location; // Property location
-        this.availabilityDate = availabilityDate; // Date from which the property is available
-        this.amenities = amenities; // Amenities object {pool: boolean, gym: boolean, wifi: boolean}
+        this.sellerId = sellerId;
+        this.imageUrl = imageUrl;
+        this.location = location;
+        this.availabilityDate = availabilityDate;
+        this.amenities = amenities;
+        this.status = 'available'; // 'available', 'rented', 'sold'
+        this.type = type;
     }
 }
 

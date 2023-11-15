@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { 
     TextField, Button, Container, Typography, Grid, 
-    Paper, Box, FormControlLabel, Checkbox 
+    Paper, Box, FormControlLabel, Checkbox, RadioGroup, 
+    FormControl, FormLabel, Radio 
 } from '@mui/material';
 import { handleListProperty, handleFileChange } from '../controllers/PropertyController';
 import './css/ListProperty.css';
@@ -11,10 +12,26 @@ const ListProperty = ({ user }) => {
     const [description, setDescription] = useState('');
     const [price, setPrice] = useState('');
     const [image, setImage] = useState(null);
-    const [location, setLocation] = useState('');   // Location
-    const [amenities, setAmenities] = useState({ pool: false, gym: false, wifi: false });   // Sample amenities
-    const [availabilityDate, setAvailabilityDate] = useState('');  // Date of availability
+    const [location, setLocation] = useState('');
+    const [amenities, setAmenities] = useState({ pool: false, gym: false, wifi: false });
+    const [availabilityDate, setAvailabilityDate] = useState('');
+    const [propertyType, setPropertyType] = useState('rent'); // Property type: rent or sale
     const [message, setMessage] = useState('');
+
+    const onSubmit = () => {
+        handleListProperty(
+            title, 
+            description, 
+            price, 
+            location, 
+            amenities, 
+            availabilityDate, 
+            propertyType, 
+            user.user._id, 
+            image, 
+            setMessage
+        );
+    };
 
     return (
         <Container className="list-property-container">
@@ -128,15 +145,54 @@ const ListProperty = ({ user }) => {
                         {/* Add more amenities as needed */}
                     </Grid>
                     <Grid item xs={12}>
+                        <FormControl component="fieldset">
+                            <FormLabel component="legend">Property Type</FormLabel>
+                            <RadioGroup 
+                                row 
+                                aria-label="propertyType" 
+                                name="propertyType" 
+                                value={propertyType} 
+                                onChange={(e) => setPropertyType(e.target.value)}
+                            >
+                                <FormControlLabel value="rent" control={<Radio />} label="For Rent" />
+                                <FormControlLabel value="sale" control={<Radio />} label="For Sale" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Amenities */}
+                    <Grid item xs={12}>
+                        <Typography variant="h6" gutterBottom>
+                            Amenities:
+                        </Typography>
+                        <FormControlLabel
+                            control={<Checkbox checked={amenities.pool} onChange={(e) => setAmenities(prev => ({ ...prev, pool: e.target.checked }))} />}
+                            label="Pool"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={amenities.gym} onChange={(e) => setAmenities(prev => ({ ...prev, gym: e.target.checked }))} />}
+                            label="Gym"
+                        />
+                        <FormControlLabel
+                            control={<Checkbox checked={amenities.wifi} onChange={(e) => setAmenities(prev => ({ ...prev, wifi: e.target.checked }))} />}
+                            label="Wi-Fi"
+                        />
+                        {/* Add more amenities as needed */}
+                    </Grid>
+
+                    {/* Submit Button */}
+                    <Grid item xs={12}>
                         <Button
                             variant="contained"
                             color="primary"
                             fullWidth
-                            onClick={() => handleListProperty(title, description, price, location, amenities, availabilityDate, user.user._id, image, setMessage)}
+                            onClick={onSubmit}
                         >
                             List Property
                         </Button>
                     </Grid>
+
+                    {/* Message Display */}
                     <Grid item xs={12}>
                         <Typography variant="body1" color="textSecondary" gutterBottom align="center">
                             {message}
