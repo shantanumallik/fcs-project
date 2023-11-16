@@ -28,7 +28,7 @@ router.post('/list', upload.single('image'), async (req, res) => {
     const location = req.body.location;               // New attribute
     const availabilityDate = req.body.availabilityDate;
     const amenityList = JSON.parse(req.body.amenities); 
-    console.log(JSON.stringify(amenityList))// New attribute
+    //console.log(JSON.stringify(amenityList))// New attribute
     const amenities = {                               // New attribute
         pool: amenityList.pool === true,
         gym: amenityList.gym === true,
@@ -43,9 +43,9 @@ router.post('/list', upload.single('image'), async (req, res) => {
         if (req.file) {
             const result = await cloudinary.uploader.upload(`data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`, { resource_type: 'image' });
             imageUrl = result.url;
-            console.log(imageUrl);
+            //console.log(imageUrl);
         }
-        console.log(imageUrl);
+        //console.log(imageUrl);
 
         const property = new Property(title, description, price, sellerId, imageUrl, location, availabilityDate, amenities, 'NA', 'rent', owner, tenant);
         await propertiesCollection.insertOne(property);
@@ -62,15 +62,15 @@ router.post('/list', upload.single('image'), async (req, res) => {
 
 // Get all properties listed by a specific seller
 router.get('/seller/:sellerId', async (req, res) => {
-    // //console.log('seller params: ' + JSON.stringify(req.params));
+    // ////console.log('seller params: ' + JSON.stringify(req.params));
 
     const { sellerId } = req.params;
-    //console.log('seller' + sellerId);
+    ////console.log('seller' + sellerId);
     const propertiesCollection = db.getDB().collection("Property");
 
     try {
         const properties = await propertiesCollection.find({ sellerId: sellerId }).toArray();
-        //console.log('Properties: ' + properties);
+        ////console.log('Properties: ' + properties);
         res.json(properties);
     } catch (error) {
         res.status(500).send("Server error");
@@ -110,7 +110,7 @@ Buyer: ____________________
 });
 
 router.post('/submit-final-contract', async (req, res) => {
-    console.log('submit-final-contract')
+    //console.log('submit-final-contract')
     const { propertyId, finalContractText, contractType, sellerId, buyerId, tenant } = req.body;
 
     // if (!propertyId || !finalContractText || !contractType) {
@@ -118,7 +118,7 @@ router.post('/submit-final-contract', async (req, res) => {
     // }
 
     const propertiesCollection = db.getDB().collection("Property");
-    console.log('loaded all properties');
+    //console.log('loaded all properties');
 
 
     try {
@@ -135,7 +135,7 @@ router.post('/submit-final-contract', async (req, res) => {
         });
         doc.end();
 
-        // console.log('Final Contract Text:', finalContractText);
+        // //console.log('Final Contract Text:', finalContractText);
 
         // In the error handling of the stream
         bufferStream.on('error', err => {
@@ -145,22 +145,25 @@ router.post('/submit-final-contract', async (req, res) => {
 
         bufferStream.on('finish', async () => {
             const pdfData = bufferStream.getContents().toString('base64');
-            console.log('generated pdf')
+            //console.log('generated pdf')
             // Upload to Cloudinary
             const result = await cloudinary.uploader.upload(`data:application/pdf;base64,${pdfData}`, { resource_type: 'raw' });
             const contractUrl = result.url;
-            console.log('contract URL: ' + contractUrl);
+            //console.log('contract URL: ' + contractUrl);
 
             let update = {
                 $set: {
                     contractUrl: contractUrl,
                     status: contractType === 'purchase' ? 'sold' : 'rented',
                     // Update owner and tenant based on contract type
-                    owner: contractType === 'purchase' ? buyerId : (sellerId || "NA"), // Update owner if sold
-                    tenant: contractType === 'rent' ? buyerId : (tenant || "NA") // Update tenant if rented
+                    owner: contractType === 'purchase' ? buyerId : sellerId, // Update owner if sold
+                    tenant: contractType === 'rent' ? buyerId : tenant // Update tenant if rented
                 }
             };
-
+            //console.log('contractType: ' + contractType);
+            //console.log('buyerId: ' + buyerId);
+            //console.log('sellerId: ' + sellerId);
+            //console.log('tenant: ' + tenant);
             // Update property status in the database
             const updateResult = await propertiesCollection.updateOne({ _id: ObjectId(propertyId) }, update);
 
@@ -245,15 +248,15 @@ router.put('/:propertyId', async (req, res) => {
 
 // Delete a property by ID
 router.delete('/delete/:propertyId', async (req, res) => {
-    //console.log('deleting property')
+    ////console.log('deleting property')
     const propertiesCollection = db.getDB().collection("Property");
-    //console.log('propertyId: ' + req.params.propertyId);
+    ////console.log('propertyId: ' + req.params.propertyId);
 
     // Ensure only the property owner can delete the listing
     const originalProperty = await propertiesCollection.findOne({ _id: ObjectId(req.params.propertyId) });
-    //console.log("property: ", originalProperty);
-    //console.log("originalSeller: ", originalProperty.sellerId);
-    //console.log("currentSeller: ", req.query);
+    ////console.log("property: ", originalProperty);
+    ////console.log("originalSeller: ", originalProperty.sellerId);
+    ////console.log("currentSeller: ", req.query);
     if (originalProperty.sellerId !== req.query.sellerId) {
         return res.status(403).send('You do not have permission to delete this property');
     }

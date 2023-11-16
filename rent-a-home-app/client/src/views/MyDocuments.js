@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Typography, List, ListItem, ListItemText, Divider } from '@mui/material';
+import { Container, Typography, List, ListItem, Card, CardContent, Link } from '@mui/material';
 
 const MyDocuments = ({ user }) => {
     const [contracts, setContracts] = useState([]);
@@ -33,15 +33,16 @@ const MyDocuments = ({ user }) => {
             ) : (
                 <List>
                     {contracts.map((contract, index) => (
-                        <React.Fragment key={index}>
-                            <ListItem>
-                                <ListItemText
-                                    primary={`Contract for ${contract.title}`}
-                                    secondary={`Contract URL: ${contract.contractUrl}`}
-                                />
-                            </ListItem>
-                            <Divider />
-                        </React.Fragment>
+                        <ListItem key={index}>
+                            <Card variant="outlined">
+                                <CardContent>
+                                    <Typography variant="h6">{`Contract for ${contract.title}`}</Typography>
+                                    <Link href={contract.contractUrl} target="_blank" rel="noopener noreferrer">
+                                        View Contract
+                                    </Link>
+                                </CardContent>
+                            </Card>
+                        </ListItem>
                     ))}
                 </List>
             )}

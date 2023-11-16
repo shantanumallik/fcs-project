@@ -13,7 +13,7 @@ router.use(cookieParser());
 
 // Signup Route
 router.post('/signup', async (req, res) => {
-    console.log("Signup request");
+    //console.log("Signup request");
     const usersCollection = db.getDB().collection("User");
     const { username, password, userType, email, phone, address, eKYCEmail, eKYCPassword } = req.body;
     try {
@@ -22,9 +22,9 @@ router.post('/signup', async (req, res) => {
             email: eKYCEmail, 
             password: eKYCPassword
         });
-        // console.log(JSON.stringify(kycResponse));
+        // //console.log(JSON.stringify(kycResponse));
         if (kycResponse.data.status !== 'success' || kycResponse.data.message !== 'Login successful') {
-            console.log('ekyc failed')
+            //console.log('ekyc failed')
             return res.status(401).send('eKYC verification failed');
         }
     } catch (error) {
@@ -37,7 +37,7 @@ router.post('/signup', async (req, res) => {
         return res.status(400).send('Invalid user type');
     }
 
-    //console.log(`User: ${username}, Password: ${password}, Type: ${userType}`);
+    ////console.log(`User: ${username}, Password: ${password}, Type: ${userType}`);
     
     const hashedPassword = await bcrypt.hash(password, 10);
     const userDocument = {
@@ -89,7 +89,7 @@ router.post('/login', async (req, res) => {
             maxAge: 3600000 // 1 hour
         });
 
-        //console.log("userId:" + user._id.toString())
+        ////console.log("userId:" + user._id.toString())
 
         return res.json({
             message: 'Login successful',

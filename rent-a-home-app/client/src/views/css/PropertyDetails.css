@@ -22,3 +22,21 @@
     border-radius: 10px;
     margin-top: 1rem;
 }
+
+/* CSS */
+.property-image-sold, .property-image-rented {
+    filter: grayscale(100%);
+    position: relative;
+}
+
+.watermark {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 2em;
+    font-weight: bold;
+    text-align: center;
+    opacity: 0.5;
+}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Container, Typography, Grid, Paper, Box, CircularProgress, Button, TextareaAutosize, Dialog } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import Payment from './Payment';
 import './css/PropertyDetails.css';
 
 const PropertyDetails = ({ user }) => {
+    const navigate = useNavigate();
     const { propertyId } = useParams();
     const [property, setProperty] = useState(null);
     const [error, setError] = useState('');
@@ -15,6 +16,7 @@ const PropertyDetails = ({ user }) => {
     const [openPaymentDialog, setOpenPaymentDialog] = useState(false);
 
 
+    // ... other state declarations
 
 
     const generateContract = async () => {
@@ -40,12 +42,33 @@ const PropertyDetails = ({ user }) => {
         try {
             const response = await axios.post(`${process.env.REACT_APP_API_DOMAIN}/api/properties/submit-final-contract`, {
                 propertyId,
+                contractType: property.type || "unavailable",
                 sellerId: property.sellerId || 'unavailable',
                 buyerId: user.user._id,
                 tenant: property.tenant || 'unavailable',
                 finalContractText: contractText
             });
-            console.log(response.data); // Handle the response
+
+
+            if (property.type === 'rent') {
+                // Set next availability date to 11 months from now
+                const nextAvailability = new Date();
+                nextAvailability.setMonth(nextAvailability.getMonth() + 11);
+    
+                await axios.put(`${process.env.REACT_APP_API_DOMAIN}/api/properties/update/${propertyId}`, {
+                    status: 'rented',
+                    availabilityDate: nextAvailability.toISOString(),
+                    // ... any other fields you need to update
+                });
+            } else if (property.type === 'purchase') {
+                // Mark as unavailable permanently
+                await axios.put(`${process.env.REACT_APP_API_DOMAIN}/api/properties/update/${propertyId}`, {
+                    status: 'sold',
+                    // ... any other fields you need to update
+                });
+            }
+            //console.log(response.data); // Handle the response
+            navigate(`/docs/${user.user._id}`);
             // Further actions after successful submission, e.g., notification to the user
         } catch (error) {
             console.error('Error submitting final contract:', error);
@@ -59,7 +82,7 @@ const PropertyDetails = ({ user }) => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_API_DOMAIN}/api/properties/${propertyId}`);
                 setProperty(response.data);
-                console.log(JSON.stringify(response.data));
+                //console.log(JSON.stringify(response.data));
             } catch (err) {
                 setError('Failed to fetch property. ' + err.message);
             }
@@ -73,7 +96,7 @@ const PropertyDetails = ({ user }) => {
 
     const onBuyRentProperty = () => {
         setIsBuying(true);
-        setOpenPaymentDialog(false); // Open the payment dialog
+        setOpenPaymentDialog(true); // Open the payment dialog
         onPaymentSuccess();
     };
 
@@ -88,9 +111,21 @@ const PropertyDetails = ({ user }) => {
         setContractText(event.target.value);
     };
 
+    const isPropertyAvailable = property && property.status === 'available';
 
     if (error) return <Typography color="error">{error}</Typography>;
     if (!property) return <CircularProgress />;
+
+
+    if (!user) {
+        return (
+            <Container>
+                <Typography variant="h6" color="error">
+                    Please log in to view property details.
+                </Typography>
+            </Container>
+        );
+    }
 
     return (
         <Container className="property-details-background">
@@ -105,13 +140,18 @@ const PropertyDetails = ({ user }) => {
                 
                 <Grid container spacing={3}>
                     <Grid item xs={12}>
-                        {property.imageUrl && 
-                            <img 
-                                src={property.imageUrl} 
-                                alt={property.title} 
-                                className="property-image"
-                            />
-                        }
+                        <div className={property.status === 'sold' ? 'property-image-sold' : property.status === 'rented' ? 'property-image-rented' : ''}>
+                            {property.imageUrl && 
+                                <img 
+                                    src={property.imageUrl} 
+                                    alt={property.title} 
+                                    className="property-image"
+                                />
+                            }
+                            {(property.status === 'sold' || property.status === 'rented') && (
+                                <div className="watermark">{property.status.toUpperCase()}</div>
+                            )}
+                        </div>
                     </Grid>
                     <Grid item xs={12}>
                         <Typography variant="body1">
@@ -149,7 +189,7 @@ const PropertyDetails = ({ user }) => {
                 </Grid>
             </Box>
 
-            {!isBuying && (
+            {!isBuying && isPropertyAvailable && (
                 <Button variant="contained" color="primary" onClick={onBuyRentProperty}>
                     Buy/Rent Property
                 </Button>

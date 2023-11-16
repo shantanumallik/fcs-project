@@ -20,7 +20,7 @@ const ListProperty = ({ user }) => {
     const [message, setMessage] = useState('');
 
     const onSubmit = () => {
-        console.log("Availability: " + availabilityDate);
+        //console.log("Availability: " + availabilityDate);
         handleListProperty(
             title, 
             description, 
@@ -109,7 +109,7 @@ const ListProperty = ({ user }) => {
                             value={availabilityDate}
                             onChange={(e) => {
                                 setAvailabilityDate(e.target.value);
-                                console.log(e.target.value);
+                                //console.log(e.target.value);
                             }}
                             InputLabelProps={{
                                 shrink: true,
